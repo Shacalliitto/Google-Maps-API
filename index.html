@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps API e Autocomplete</title>
+</head>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center
+    }
+
+    #map {
+        width: 800px;
+        height: 800px;
+        border: 2px solid black;
+    }
+
+    #inputSearch{
+        width: 300px;
+        height: 60px;
+        text-align: center;
+    }
+</style>
+
+<body>
+    <input id="inputSearch" type="text" placeholder="Digite seu endereço">
+    <h1 id="details"></h1>
+    <div id="map"></div>
+    <script>
+        var map;
+        var InforObj = [];
+        var centerCords = {
+            lat: -23.579226,
+            lng: -46.496701
+        }
+
+        const icons = {
+            marker3v: {
+                icon: "logoMarker.png",
+            }
+        };
+
+        const markersOnMap = [
+            {
+                LatLng: [{
+                    lat: -23.579226,
+                    lng: -46.496701
+                }],
+                type: 'marker3v'
+            },
+        ]
+
+        function addMarkerInfo() {
+            for (var i = 0; i < markersOnMap.length; i++) {
+                const marker = new google.maps.Marker({
+                    position: markersOnMap[i].LatLng[0],
+                    icon: icons[markersOnMap[i].type].icon,
+                    map: map
+                })
+            }
+        }
+
+        window.onload = function () {
+            initMap();
+        };
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: centerCords
+            });
+            addMarkerInfo()
+        }
+    </script>
+    <script>
+        let autocomplete;
+        function initAutocomplete() {
+            autocomplete = new google.maps.places.Autocomplete(
+                document.getElementById('inputSearch'),
+                {
+                    types: ['(cities)'],
+                    componentRestrictions: { country: ['br'] },
+                    fields: ['places_id', 'geometry', 'name']
+                });
+
+            autocomplete.addListener('place_chaged', onPlaceChanged)
+        }
+
+        function onPlaceChanged() {
+            var place = autocomplete.getPlace();
+
+            if (!place.geometry) {
+                // document.getElementById('inputSearch').placeholder = 
+                // "Digite um endereço";
+                console.log('foi')
+            } else {
+                // document.getElementById('details').innerHTML = place.name;
+                console.log('place.name')
+            }
+        }
+    </script>
+    <script
+        src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAh6ZayixjLChzKUcXD0vN7PNxG2OBUcSs&#038;libraries=places&callback=initMap'
+        async defer></script>
+    <script
+        src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAh6ZayixjLChzKUcXD0vN7PNxG2OBUcSs&#038;libraries=places&callback=initAutocomplete'
+        async defer></script>
+
+</body>
+
+</html>
