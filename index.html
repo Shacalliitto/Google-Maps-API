@@ -23,7 +23,7 @@
         border: 2px solid black;
     }
 
-    #inputSearch{
+    #inputSearch {
         width: 300px;
         height: 60px;
         text-align: center;
@@ -35,6 +35,7 @@
     <h1 id="details"></h1>
     <div id="map"></div>
     <script>
+        // inicialização e configuração do mapa
         var map;
         var InforObj = [];
         var centerCords = {
@@ -42,32 +43,61 @@
             lng: -46.496701
         }
 
+        // Definição da imagem usada no marker
         const icons = {
             marker3v: {
                 icon: "logoMarker.png",
             }
         };
 
+        // Adicionando coordenadas para posicionar o marker no mapa
         const markersOnMap = [
             {
                 LatLng: [{
                     lat: -23.579226,
                     lng: -46.496701
                 }],
+                // especificando qual marker está sendo chamado para essa coordenada
                 type: 'marker3v'
             },
         ]
 
+        // Adicionando o Marker
         function addMarkerInfo() {
             for (var i = 0; i < markersOnMap.length; i++) {
                 const marker = new google.maps.Marker({
                     position: markersOnMap[i].LatLng[0],
                     icon: icons[markersOnMap[i].type].icon,
-                    map: map
+                    map: map,
                 })
+
+                const contentString =
+                    '<div id="content">' +
+                    '<div id="siteNotice">' +
+                    "</div>" +
+                    '<h1 id="firstHeading" class="firstHeading">My House</h1>' +
+                    '<div id="bodyContent">' +
+                    "<p><b>My house</b>, I mean, it's the place were I live.</p>" +
+                    '<p>Go see my website: <a target="_blank" href="https://shacalliitto.github.io">' +
+                    "Shacall</a> " +
+                    "</p>" +
+                    "</div>" +
+                    "</div>";
+                const infowindow = new google.maps.InfoWindow({
+                    content: contentString,
+                });
+
+                marker.addListener("click", () => {
+                    infowindow.open({
+                        anchor: marker,
+                        map,
+                        shouldFocus: true,
+                    });
+                });
             }
         }
 
+        // Chamando a inicialização do mapa quando carregada a pagina
         window.onload = function () {
             initMap();
         };
